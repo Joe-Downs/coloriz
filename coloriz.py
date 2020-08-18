@@ -1,12 +1,12 @@
-import configTest
+import config
 import discord
 import sys
 
 from discord.ext import commands
 
 owner_ID = 174362561385332736
-botToken = configTest.getToken()
-prefix = configTest.getPrefix()
+botToken = config.getToken()
+prefix = config.getPrefix()
 
 bot = commands.Bot(command_prefix = prefix)
     
