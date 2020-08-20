@@ -35,12 +35,34 @@ async def assignColor(ctx, red, green, blue):
         await ctx.guild.edit_role_positions(positions = {role: topColorRoleNum})
     return color
 
+async def cleanupColors(ctx):
+    rolesDeleted = 0
+    for role in ctx.guild.roles:
+        if str(role).startswith("#"):
+            if len(role.members) == 0:
+                await role.delete(reason = "Unused")
+                rolesDeleted += 1
+    message = f"Deleted {rolesDeleted} roles"
+    await ctx.send(message)
+
+def countColorRoles(ctx):
+    roleCount = 0
+    for role in ctx.guild.roles:
+        if str(role).startswith("#"):
+            roleCount += 1
+    return roleCount
+
 @bot.command()
 async def color(ctx, red, green, blue):
     color = await assignColor(ctx, red, green, blue)
     messageString = f"Your color is {str(color)}"
     await ctx.send(messageString)
 
+@bot.command()
+async def stats(ctx):
+    roleCount = countColorRoles(ctx)
+    message = f"**{str(ctx.guild)}** has {roleCount} color roles!"
+    await ctx.send(message)
 
 # 'sudo' commands can only be run by the bot owner
 @bot.command()
@@ -53,9 +75,13 @@ async def sudo(ctx, arg):
                        " This incident will be reported.")
         return
 
-    if (arg == "exit" or arg == "stop"):
+    if arg == "exit" or arg == "stop":
         await ctx.send("Sleep mode activated...")
         print("Stopping Bot...")
         sys.exit()
+        
+    if arg == "cleanup-colors":
+        await ctx.send("Clearing colors...")
+        await cleanupColors(ctx)
 
 bot.run(botToken)
