@@ -42,7 +42,7 @@ async def cleanupColors(ctx):
             if len(role.members) == 0:
                 await role.delete(reason = "Unused")
                 rolesDeleted += 1
-    message = f"Deleted {rolesDeleted} roles"
+    message = f"Deleted {rolesDeleted} roles."
     await ctx.send(message)
 
 def countColorRoles(ctx):
@@ -52,11 +52,46 @@ def countColorRoles(ctx):
             roleCount += 1
     return roleCount
 
+async def removeColorRole(ctx):
+    user = ctx.message.author
+    for role in user.roles:
+        if str(role).startswith("#"):
+            await user.remove_roles(role)
+            break
+
 @bot.command()
-async def color(ctx, red, green, blue):
-    color = await assignColor(ctx, red, green, blue)
-    messageString = f"Your color is {str(color)}"
-    await ctx.send(messageString)
+async def color(ctx, *args):
+    message = ""
+    formatReminder = " Please make sure to follow the pattern"
+    formatReminder += f" ``{prefix}color [R] [G] [B]`` and try again."
+    if len(args) > 3:
+        message = "Too many arguments!"
+    elif len(args) == 3:
+        isValid = True
+        for arg in args:
+            try:
+                int(arg)
+            except:
+                message = "Arguments are not integers!"
+                isValid = False
+                break
+            if not 0 <= int(arg) <= 255:
+                message = "Arguments are not between 0-255!"
+                isValid = False
+                break
+        if isValid:
+            color = await assignColor(ctx, args[0], args[1], args[2])
+            message = f"Your color is {str(color)}."
+            formatReminder = ""
+    elif len(args) < 3:
+        message = "Too few arguments!"
+    if len(args) == 1:
+        if args[0] == "clear":
+            await removeColorRole(ctx)
+            message = "Cleared your color role."
+            formatReminder = ""
+    message += formatReminder
+    await ctx.send(message)
 
 @bot.command()
 async def stats(ctx):
@@ -78,6 +113,7 @@ async def sudo(ctx, arg):
     if arg == "exit" or arg == "stop":
         await ctx.send("Sleep mode activated...")
         print("Stopping Bot...")
+        await bot.close()
         sys.exit()
         
     if arg == "cleanup-colors":
