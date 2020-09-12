@@ -59,7 +59,12 @@ async def removeColorRole(ctx):
             await user.remove_roles(role)
             break
 
-@bot.command()
+colorHelpMessage = "Choose your own color role with this command, replacing R G B with an RGB triplet. \n"
+colorHelpMessage += "Replace the triplet with \"clear\" to clear your color role."
+        
+@bot.command(help = colorHelpMessage,
+             brief = "Change your color!",
+             usage = "[R G B | clear]")
 async def color(ctx, *args):
     message = ""
     formatReminder = " Please make sure to follow the pattern"
@@ -92,7 +97,7 @@ async def color(ctx, *args):
             formatReminder = ""
     message += formatReminder
     await ctx.send(message)
-
+    
 @bot.command()
 async def stats(ctx):
     roleCount = countColorRoles(ctx)
