@@ -97,15 +97,23 @@ async def color(ctx, *args):
             formatReminder = ""
     message += formatReminder
     await ctx.send(message)
-    
-@bot.command()
+
+statsHelpMessage = "Show stats about this server's color roles"
+@bot.command(help = statsHelpMessage,
+             brief = "Get some stats!")
 async def stats(ctx):
     roleCount = countColorRoles(ctx)
     message = f"**{str(ctx.guild)}** has {roleCount} color roles!"
     await ctx.send(message)
 
+sudoHelpMessage = "These commands can only be run by server admins or the bot owner\n"
+sudoHelpMessage += "exit/stop ----------- stops the bot\n"
+sudoHelpMessage += "cleanup-colors ------ removes color roles not assigned to any members"
+
 # 'sudo' commands can only be run by the bot owner
-@bot.command()
+@bot.command(help = sudoHelpMessage,
+             brief = "Super secret!",
+             usage = "[exit/stop | cleanup-colors]")
 async def sudo(ctx, arg):
     # Checks if the message was sent by the bot owner
     # If not, tell the user and exit
