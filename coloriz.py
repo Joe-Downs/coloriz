@@ -1,3 +1,4 @@
+import botCommands
 import config
 import discord
 import sys
@@ -95,6 +96,18 @@ async def color(ctx, *args):
             await removeColorRole(ctx)
             message = "Cleared your color role."
             formatReminder = ""
+        else:
+            try:
+                rgbTuple = botCommands.hexToRGB(args[0])
+                red = rgbTuple[0]
+                green = rgbTuple[1]
+                blue = rgbTuple[2]
+                color = await assignColor(ctx, red, green, blue)
+                message = f"Your color is {str(color)}."
+                formatReminder = ""
+            except ValueError as error:
+                message = str(error)
+                formatReminder = ""
     message += formatReminder
     await ctx.send(message)
 
