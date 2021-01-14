@@ -18,8 +18,6 @@ bot = commands.Bot(command_prefix = prefix, intents = intents)
 def getBotTopRoleNum(ctx):
     botMember = ctx.guild.me
     botRoles = botMember.roles
-    topBotRole = botRoles[len(botRoles) - 1]
-    print(topBotRole)
     return len(botRoles) - 1
     
 async def assignColor(ctx, red, green, blue):
@@ -39,7 +37,6 @@ async def assignColor(ctx, red, green, blue):
             break
         
     if needsNewRole:
-        print(f"Creating role {str(color)}")
         role = await ctx.guild.create_role(name = str(color),
                                            color = color)
         await user.add_roles(role)
