@@ -9,7 +9,10 @@ owner_ID = 174362561385332736
 botToken = config.getToken()
 prefix = config.getPrefix()
 
-bot = commands.Bot(command_prefix = prefix)
+intents = discord.Intents().default()
+intents.members = True
+
+bot = commands.Bot(command_prefix = prefix, intents = intents)
     
 async def assignColor(ctx, red, green, blue):
     color = discord.Color.from_rgb(int(red), int(green), int(blue))
