@@ -13,6 +13,14 @@ intents = discord.Intents().default()
 intents.members = True
 
 bot = commands.Bot(command_prefix = prefix, intents = intents)
+
+# Returns the index position of the Bots top role in the guild's list of roles
+def getBotTopRoleNum(ctx):
+    botMember = ctx.guild.me
+    botRoles = botMember.roles
+    topBotRole = botRoles[len(botRoles) - 1]
+    print(topBotRole)
+    return len(botRoles) - 1
     
 async def assignColor(ctx, red, green, blue):
     color = discord.Color.from_rgb(int(red), int(green), int(blue))
@@ -35,7 +43,8 @@ async def assignColor(ctx, red, green, blue):
         role = await ctx.guild.create_role(name = str(color),
                                            color = color)
         await user.add_roles(role)
-        topColorRoleNum = len(ctx.guild.roles) - 3
+        # The top color role will be the one directly under the bot's own top role
+        topColorRoleNum = getBotTopRoleNum(ctx) - 1
         await ctx.guild.edit_role_positions(positions = {role: topColorRoleNum})
     return color
 
