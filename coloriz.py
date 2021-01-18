@@ -101,30 +101,3 @@ async def sudo(ctx, arg):
         await cleanupColors(ctx)
 
 bot.run(botToken)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
