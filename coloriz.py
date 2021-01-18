@@ -1,8 +1,8 @@
 import botCommands
+import colorCommands
 import config
 import discord
 import sys
-
 from discord.ext import commands
 
 owner_ID = 174362561385332736
@@ -47,7 +47,7 @@ async def color(ctx, *args):
         message = "Too few arguments!"
     if len(args) == 1:
         if args[0] == "clear":
-            await removeColorRole(ctx)
+            await colorCommands.removeColorRole(ctx)
             message = "Cleared your color role."
             formatReminder = ""
         else:
@@ -56,7 +56,7 @@ async def color(ctx, *args):
                 red = rgbTuple[0]
                 green = rgbTuple[1]
                 blue = rgbTuple[2]
-                color = await assignColor(ctx, red, green, blue)
+                color = await colorCommands.assignColor(ctx, red, green, blue)
                 message = f"Your color is {str(color)}."
                 formatReminder = ""
             except ValueError as error:
@@ -69,7 +69,7 @@ statsHelpMessage = "Show stats about this server's color roles"
 @bot.command(help = statsHelpMessage,
              brief = "Get some stats!")
 async def stats(ctx):
-    roleCount = countColorRoles(ctx)
+    roleCount = colorCommands.countColorRoles(ctx)
     message = f"**{str(ctx.guild)}** has {roleCount} color roles!"
     await ctx.send(message)
 
@@ -98,6 +98,6 @@ async def sudo(ctx, arg):
         
     if arg == "cleanup-colors":
         await ctx.send("Clearing colors...")
-        await cleanupColors(ctx)
+        await colorCommands.cleanupColors(ctx)
 
 bot.run(botToken)
