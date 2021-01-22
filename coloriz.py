@@ -40,7 +40,7 @@ async def color(ctx, *args):
                 isValid = False
                 break
         if isValid:
-            color = await assignColor(ctx, args[0], args[1], args[2])
+            color = await colorCommands.assignColor(ctx, args[0], args[1], args[2])
             message = f"Your color is {str(color)}."
             formatReminder = ""
     elif len(args) < 3:
