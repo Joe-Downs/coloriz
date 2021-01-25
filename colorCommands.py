@@ -4,7 +4,9 @@ import discord
 def getBotTopRoleNum(ctx):
     botMember = ctx.guild.me
     botRoles = botMember.roles
-    return len(botRoles) - 1
+    topBotRole = botRoles[len(botRoles) - 1]
+    return ctx.guild.roles.index(topBotRole)
+        
 
 async def assignColor(ctx, red, green, blue):
     color = discord.Color.from_rgb(int(red), int(green), int(blue))
