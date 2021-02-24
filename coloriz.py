@@ -50,6 +50,11 @@ async def color(ctx, *args):
             await colorCommands.removeColorRole(ctx)
             message = "Cleared your color role."
             formatReminder = ""
+        elif args[0] == "random":
+            red, green, blue = colorCommands.randomColor()
+            color = await colorCommands.assignColor(ctx, red, green, blue)
+            message = f"Your color is {str(color)}."
+            formatReminder = ""
         else:
             try:
                 rgbTuple = botCommands.hexToRGB(args[0])
