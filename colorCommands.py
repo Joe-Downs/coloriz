@@ -30,7 +30,10 @@ async def assignColor(ctx, red, green, blue):
         await user.add_roles(role)
         # The top color role will be the one directly under the bot's own top role
         topColorRoleNum = getBotTopRoleNum(ctx) - 1
-        await ctx.guild.edit_role_positions(positions = {role: topColorRoleNum})
+        try:
+            await ctx.guild.edit_role_positions(positions = {role: topColorRoleNum})
+        except:
+            await ctx.send(f"Something went wrong moving {str(color)} to position {topColorRoleNum}")
     return color
 
 async def cleanupColors(ctx):
