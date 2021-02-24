@@ -1,3 +1,4 @@
+import random
 import discord
 
 # Returns the index position of the Bots top role in the guild's list of roles
@@ -48,6 +49,14 @@ def countColorRoles(ctx):
         if str(role).startswith("#"):
             roleCount += 1
     return roleCount
+
+# Chooses three random numbers, each 0-255 and returns them
+def randomColor():
+    random.seed()
+    red = random.randint(0,255)
+    green = random.randint(0,255)
+    blue = random.randint(0,255)
+    return red, green, blue
 
 async def removeColorRole(ctx):
     user = ctx.message.author
