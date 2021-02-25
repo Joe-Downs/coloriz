@@ -57,10 +57,7 @@ async def color(ctx, *args):
             formatReminder = ""
         else:
             try:
-                rgbTuple = botCommands.hexToRGB(args[0])
-                red = rgbTuple[0]
-                green = rgbTuple[1]
-                blue = rgbTuple[2]
+                red, green, blue = botCommands.hexToRGB(args[0])
                 color = await colorCommands.assignColor(ctx, red, green, blue)
                 message = f"Your color is {str(color)}."
                 formatReminder = ""
