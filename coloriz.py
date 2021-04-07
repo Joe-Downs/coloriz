@@ -102,4 +102,10 @@ async def sudo(ctx, arg):
         await ctx.send("Clearing colors...")
         await colorCommands.cleanupColors(ctx)
 
+# Commands for testing various functionalities of the bot
+@bot.command()
+async def test(ctx, *args):
+    if args[0] == "type":
+        await ctx.send(f"The type of {args[1]} is {type(args[1])}")
+
 bot.run(botToken)
