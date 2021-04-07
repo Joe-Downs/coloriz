@@ -1,5 +1,15 @@
+import csv
 import random
 import discord
+
+# Load names and RGB values from colors.csv into a list of dictionaries to be
+# used by the colorByName() function.
+# The columns, in order, are codeName, prettyName, hex, R, G, B
+colorDictList = []
+with open("colors.csv", newline='') as csvColors:
+    colorReader = csv.DictReader(csvColors)
+    for row in colorReader:
+        colorDictList.append(row)
 
 # Returns the index position of the Bots top role in the guild's list of roles
 def getBotTopRoleNum(ctx):
