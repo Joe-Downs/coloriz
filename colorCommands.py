@@ -56,6 +56,22 @@ async def cleanupColors(ctx):
     message = f"Deleted {rolesDeleted} roles."
     await ctx.send(message)
 
+# Given a color name, this function will search the colors given in the
+# colors.csv file for that name. If found, it will assign the user with that
+# color; if not, the user is notified. CSV from codebrainz's repo on GitHub.
+# (https://github.com/codebrainz/color-names/blob/master/output/colors.csv)
+async def colorByName(ctx, name):
+    # Replace any spaces in the name with underscores and make it lowercase
+    name = name.replace(" ", "_")
+    name = name.lower()
+    # Search the colorDictList for the given name
+    for color in colorDictList:
+        if color["codeName"] == name:
+            return await assignColor(ctx, color["R"], color["G"], color["B"])
+    # If nothing was found (and return not called) throw an error that the named
+    # color doesn't exist
+    raise NameError(f"The named color was not found")
+
 def countColorRoles(ctx):
     roleCount = 0
     for role in ctx.guild.roles:
