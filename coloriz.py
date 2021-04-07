@@ -55,7 +55,9 @@ async def color(ctx, *args):
             color = await colorCommands.assignColor(ctx, red, green, blue)
             message = f"Your color is {str(color)}."
             formatReminder = ""
-        else:
+        # If it starts with a number sign, try to assign a color based off the
+        # hex value
+        elif args[0].startswith("#"):
             try:
                 red, green, blue = botCommands.hexToRGB(args[0])
                 color = await colorCommands.assignColor(ctx, red, green, blue)
@@ -64,6 +66,13 @@ async def color(ctx, *args):
             except ValueError as error:
                 message = str(error)
                 formatReminder = ""
+        else:
+            try:
+                color = await colorCommands.colorByName(ctx, args[0])
+                message = f"Your color is {str(color)}"
+            except NameError as error:
+                message = str(error)
+            formatReminder = ""
     message += formatReminder
     await ctx.send(message)
 
