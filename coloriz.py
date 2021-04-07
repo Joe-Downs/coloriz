@@ -16,7 +16,24 @@ bot = commands.Bot(command_prefix = prefix, intents = intents)
 
 colorHelpMessage = "Choose your own color role with this command, replacing R G B with an RGB triplet. \n"
 colorHelpMessage += "Replace the triplet with \"clear\" to clear your color role."
-        
+
+# Outputs a link to the table of color names, and some help
+@bot.command()
+async def colorhelp(ctx):
+    message1 = "```To get a list of the named colors you can acquire, please visit:```"
+    message2 = "<https://github.com/codebrainz/color-names/blob/master/output/colors.csv>"
+    message3 = "```To get a named color from here, use the name of the leftmost side. "
+    message3 += "If using a name with multiple words, either use underscores or "
+    message3 += "put the name in quotation marks.```"
+    message4 = "```If you would like a custom color, you can use this online"
+    message4 += "tool to obtain a hex value:```"
+    message5 = "<https://rgbcolorcode.com/>"
+    await ctx.send(message1)
+    await ctx.send(message2)
+    await ctx.send(message3)
+    await ctx.send(message4)
+    await ctx.send(message5)
+
 @bot.command(help = colorHelpMessage,
              brief = "Change your color!",
              usage = "[R G B | clear]")
