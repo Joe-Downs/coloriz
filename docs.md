@@ -4,7 +4,7 @@
 **Brief Help:** Change your color
 
 **Usage:** [R G B | clear]
-#### Full Help
+#### Full Help:
 ```
 Choose your own color role with this command, replacing R G B with an RGB triplet.
 Replace the triplet with "clear" to clear your color role.
@@ -13,7 +13,7 @@ Replace the triplet with "clear" to clear your color role.
 ## Stats
 **Brief Help:** Show some stats
 
-#### Full Help
+#### Full Help:
 ```
 Show stats about this server's color roles
 ```
