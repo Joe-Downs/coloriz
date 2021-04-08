@@ -25,7 +25,7 @@ async def colorhelp(ctx):
     message3 = "```To get a named color from here, use the name of the leftmost side. "
     message3 += "If using a name with multiple words, either use underscores or "
     message3 += "put the name in quotation marks.```"
-    message4 = "```If you would like a custom color, you can use this online"
+    message4 = "```If you would like a custom color, you can use this online "
     message4 += "tool to obtain a hex value:```"
     message5 = "<https://rgbcolorcode.com/>"
     await ctx.send(message1)
