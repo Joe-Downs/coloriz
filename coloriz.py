@@ -21,7 +21,7 @@ colorHelpMessage += "Replace the triplet with \"clear\" to clear your color role
 @bot.command()
 async def colorhelp(ctx):
     message1 = "```To get a list of the named colors you can acquire, please visit:```"
-    message2 = "<https://github.com/codebrainz/color-names/blob/master/output/colors.csv>"
+    message2 = "<https://unpkg.com/color-name-list/dist/colornames.html>"
     message3 = "```To get a named color from here, use the name of the leftmost side. "
     message3 += "If using a name with multiple words, either use underscores or "
     message3 += "put the name in quotation marks.```"
