@@ -1,6 +1,8 @@
 import csv
 import random
 import discord
+import botCommands
+import namedColors
 
 # Load names and RGB values from colors.csv into a list of dictionaries to be
 # used by the colorByName() function.
@@ -57,20 +59,16 @@ async def cleanupColors(ctx):
     await ctx.send(message)
 
 # Given a color name, this function will search the colors given in the
-# colors.csv file for that name. If found, it will assign the user with that
-# color; if not, the user is notified. CSV from codebrainz's repo on GitHub.
-# (https://github.com/codebrainz/color-names/blob/master/output/colors.csv)
+# colorNames.csv file for that name. If found, it will assign the user with that
+# color; if not, the user is notified. CSV from meodai's repo on GitHub.
+# (https://github.com/meodai/color-names/blob/master/dist/colornames.csv)
 async def colorByName(ctx, name):
-    # Replace any spaces in the name with underscores and make it lowercase
-    name = name.replace(" ", "_")
+    # Replace any underscores in the name with spaces and make it lowercase
+    name = name.replace("_", " ")
     name = name.lower()
-    # Search the colorDictList for the given name
-    for color in colorDictList:
-        if color["codeName"] == name:
-            return await assignColor(ctx, color["R"], color["G"], color["B"])
-    # If nothing was found (and return not called) throw an error that the named
-    # color doesn't exist
-    raise NameError(f"The named color was not found")
+    colorHex = namedColors.findNamedColorHex(name)
+    red, green, blue = botCommands.hexToRGB(colorHex)
+    return await assignColor(ctx, red, green, blue)
 
 def countColorRoles(ctx):
     roleCount = 0
