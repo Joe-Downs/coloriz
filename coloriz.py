@@ -1,3 +1,4 @@
+import auth
 import botCommands
 import colorCommands
 import config
@@ -105,33 +106,33 @@ sudoHelpMessage = "These commands can only be run by server admins or the bot ow
 sudoHelpMessage += "exit/stop ----------- stops the bot\n"
 sudoHelpMessage += "cleanup-colors ------ removes color roles not assigned to any members"
 
-# 'sudo' commands can only be run by the bot owner
+# Some 'sudo' commands can only be run by the bot owner; some by admins
 @bot.command(help = sudoHelpMessage,
              brief = "Super secret!",
              usage = "[exit/stop | cleanup-colors]")
 async def sudo(ctx, arg):
-    # Checks if the message was sent by the bot owner
-    # If not, tell the user and exit
-    if (ctx.message.author.id != owner_ID):
-        await ctx.send(ctx.message.author.name +
-                       " is not in the sudoers file." +
-                       " This incident will be reported.")
-        return
-
+    sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
     if arg == "exit" or arg == "stop":
-        await ctx.send("Sleep mode activated...")
-        print("Stopping Bot...")
-        await bot.close()
-        sys.exit()
-        
+        # Checks if the message was sent by the bot owner
+        # If not, tell the user and exit
+        if (ctx.message.author.id != owner_ID):
+            await ctx.send(sudoFailMessage)
+            return
+        else:
+            await ctx.send("Sleep mode activated...")
+            print("Stopping Bot...")
+            await bot.close()
+            sys.exit()
     if arg == "cleanup-colors":
-        await ctx.send("Clearing colors...")
-        await colorCommands.cleanupColors(ctx)
+        if auth.canManageRoles(ctx):
+            await ctx.send("Clearing colors...")
+            await colorCommands.cleanupColors(ctx)
+        else:
+            await ctx.send(sudoFailMessage)
 
 # Commands for testing various functionalities of the bot
 @bot.command()
 async def test(ctx, *args):
     if args[0] == "type":
         await ctx.send(f"The type of {args[1]} is {type(args[1])}")
-
 bot.run(botToken)
