@@ -8,11 +8,14 @@ failMessage = "is not in the sudoers file. This incident will be reported."
 
 # Checks if the user calling a command has the right permissions by going
 # through their list of roles and checking if any of them have the "Manage Role"
-# permission enabled. Returns True if they do. False if they don't.
+# or "Administrator" permission enabled. Returns True if they do. False if they
+# don't.
 def canManageRoles(ctx):
     userRoles = ctx.message.author.roles
     for role in userRoles:
         if role.permissions.manage_roles == True:
+            return True
+        if role.permissions.administrator == True:
             return True
     return False
 
