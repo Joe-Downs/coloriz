@@ -135,4 +135,7 @@ async def sudo(ctx, arg):
 async def test(ctx, *args):
     if args[0] == "type":
         await ctx.send(f"The type of {args[1]} is {type(args[1])}")
+    if args[0] == "perm" or args[0] == "perms":
+        if args[1] == "manage_roles":
+            await ctx.send(f"{auth.canManageRoles(ctx)}")
 bot.run(botToken)
