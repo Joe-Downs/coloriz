@@ -68,6 +68,14 @@ def countColorRoles(ctx):
             roleCount += 1
     return roleCount
 
+# Returns a message string containing the specified user's color. If the user
+# does not have a color role, then return a message with such.
+def getUserColor(ctx, user):
+    for role in user.roles:
+        if str(role).startswith("#"):
+            return f"**{user.nick}'s** color is {str(role)}"
+    return f"**{user.nick}** does not have a color role"
+
 # Chooses three random numbers, each 0-255 and returns them
 def randomColor():
     random.seed()
