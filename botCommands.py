@@ -61,31 +61,31 @@ async def colorSet(ctx, args):
                 red, green, blue = hexToRGB(args[0])
             except ValueError as hexError:
                 return hexError
-        # See if it's a named color, if not, try to parse it into RGB
-        try:
-            color = await colorCommands.colorByName(ctx, args[0])
-        except NameError as colorNameError:
+        else:
+            # See if it's a named color, if not, try to parse it into RGB
             try:
-                red, green, blue = parseRGB(args[0])
-                color = await colorCommands.assignColor(ctx, red, green, blue)
-            except NameError:
-                # If a NameError is caught from parseRGB(), there were no digits
-                # found in the input, thus we're assuming the user wanted a
-                # named color. Return the error message from colorByName()
-                # saying such.
-                return colorNameError
-            except ValueError as parseError:
-                return parseError
+                red, green, blue =  colorCommands.colorByName(ctx, args[0])
+            except NameError as colorNameError:
+                try:
+                    red, green, blue = parseRGB(args[0])
+                except NameError:
+                    # If a NameError is caught from parseRGB(), there were no
+                    # digits found in the input, thus we're assuming the user
+                    # wanted a named color. Return the error message from
+                    # colorByName() saying such.
+                    return colorNameError
+                except ValueError as parseError:
+                    return parseError
     else:
         # Combine the rest of the arguments and parse them with parseRGB().
         arguments = ""
         try:
             for arg in args:
-                arguments += arg
+                arguments += f"{arg} "
             red, green, blue = parseRGB(arguments)
         except ValueError as parseError:
             return parseError
-        color = await colorCommands.assignColor(ctx, red, green, blue)
+    color = await colorCommands.assignColor(ctx, red, green, blue)
     return f"Your color is **{str(color)}**"
 
 # colorRandom() sets a user's color to a completely random color. It takes no
