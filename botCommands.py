@@ -88,4 +88,14 @@ async def colorSet(ctx, args):
         color = await colorCommands.assignColor(ctx, red, green, blue)
     return f"Your color is **{str(color)}**"
 
+# colorRandom() sets a user's color to a completely random color. It takes no
+# arguments other than the ctx and returns a string that states what the user's
+# new color is.
+async def colorRandom(ctx):
+    # Get three random integers between [0.255] and assign the user's color with
+    # them.
+    red, green, blue = colorCommands.randomColor()
+    color = await colorCommands.assignColor(ctx, red, green, blue)
+    return f"Your color is **{str(color)}**"
+
 # ==============================================================================
