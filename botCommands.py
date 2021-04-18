@@ -98,4 +98,10 @@ async def colorRandom(ctx):
     color = await colorCommands.assignColor(ctx, red, green, blue)
     return f"Your color is **{str(color)}**"
 
+# colorClear() clears the user's color. It takes no arguments other than ctx and
+# returns a string saying the user's color was cleared.
+async def colorClear(ctx):
+    await colorCommands.removeColorRole(ctx)
+    return "Your color role has been cleared"
+
 # ==============================================================================
