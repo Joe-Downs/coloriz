@@ -35,11 +35,17 @@ async def colorhelp(ctx):
 # =============================== Color Commands ===============================
 
 @bot.group(name = "color", invoke_without_command = True)
-async def color(ctx):
+async def color(ctx, *args):
     # Calling the command with no arguments or subcommands has the bot return a
     # message.
     user = ctx.message.author
     colorMessage = colorCommands.getUserColor(ctx, user)
+    # If there are arguments passed with the command, ask the user if they
+    # wanted to set their color instead.
+    if len(args) > 0:
+        colorMessage += f"""
+Colors are now assigned with ``{prefix}color set``, did you mean to do this?
+"""
     await ctx.send(colorMessage)
 
 # color set is used for setting colors based off a given hex code, RGB triplet,
