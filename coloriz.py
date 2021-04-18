@@ -15,9 +15,6 @@ intents.members = True
 
 bot = commands.Bot(command_prefix = prefix, intents = intents)
 
-colorHelpMessage = "Choose your own color role with this command, replacing R G B with an RGB triplet. \n"
-colorHelpMessage += "Replace the triplet with \"clear\" to clear your color role."
-
 # Outputs a link to the table of color names, and some help
 @bot.command()
 async def colorhelp(ctx):
@@ -35,64 +32,35 @@ async def colorhelp(ctx):
     await ctx.send(message4)
     await ctx.send(message5)
 
-@bot.command(help = colorHelpMessage,
-             brief = "Change your color!",
-             usage = "[R G B | clear]")
-async def color(ctx, *args):
-    message = ""
-    formatReminder = " Please make sure to follow the pattern"
-    formatReminder += f" ``{prefix}color [R] [G] [B]`` and try again."
-    if len(args) > 3:
-        message = "Too many arguments!"
-    elif len(args) == 3:
-        isValid = True
-        for arg in args:
-            try:
-                int(arg)
-            except:
-                message = "Arguments are not integers!"
-                isValid = False
-                break
-            if not 0 <= int(arg) <= 255:
-                message = "Arguments are not between 0-255!"
-                isValid = False
-                break
-        if isValid:
-            color = await colorCommands.assignColor(ctx, args[0], args[1], args[2])
-            message = f"Your color is {str(color)}."
-            formatReminder = ""
-    elif len(args) < 3:
-        message = "Too few arguments!"
-    if len(args) == 1:
-        if args[0] == "clear":
-            await colorCommands.removeColorRole(ctx)
-            message = "Cleared your color role."
-            formatReminder = ""
-        elif args[0] == "random":
-            red, green, blue = colorCommands.randomColor()
-            color = await colorCommands.assignColor(ctx, red, green, blue)
-            message = f"Your color is {str(color)}."
-            formatReminder = ""
-        # If it starts with a number sign, try to assign a color based off the
-        # hex value
-        elif args[0].startswith("#"):
-            try:
-                red, green, blue = botCommands.hexToRGB(args[0])
-                color = await colorCommands.assignColor(ctx, red, green, blue)
-                message = f"Your color is {str(color)}."
-                formatReminder = ""
-            except ValueError as error:
-                message = str(error)
-                formatReminder = ""
-        else:
-            try:
-                color = await colorCommands.colorByName(ctx, args[0])
-                message = f"Your color is {str(color)}"
-            except NameError as error:
-                message = str(error)
-            formatReminder = ""
-    message += formatReminder
-    await ctx.send(message)
+# =============================== Color Commands ===============================
+
+@bot.group(name = "color", invoke_without_command = True)
+async def color(ctx):
+    # Calling the command with no arguments or subcommands has the bot return a
+    # message.
+    user = ctx.message.author
+    colorMessage = colorCommands.getUserColor(ctx, user)
+    await ctx.send(colorMessage)
+
+# color set is used for setting colors based off a given hex code, RGB triplet,
+# or a named color
+@color.command()
+async def set(ctx, *args):
+    setMessage = await botCommands.colorSet(ctx, args)
+    await ctx.send(setMessage)
+
+# color random assigns the user with a completely random color.
+@color.command()
+async def random(ctx):
+    randomMessage = await botCommands.colorRandom(ctx)
+    await ctx.send(randomMessage)
+
+@color.command()
+async def clear(ctx):
+    clearMessage = await botCommands.colorClear(ctx)
+    await ctx.send(clearMessage)
+
+# ==============================================================================
 
 statsHelpMessage = "Show stats about this server's color roles"
 @bot.command(help = statsHelpMessage,
