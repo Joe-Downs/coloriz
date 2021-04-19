@@ -54,7 +54,7 @@ async def cleanupColors(ctx):
 # blue values pertaining to that color; if not, the user is notified. CSV from
 # meodai's repo on GitHub.
 # (https://github.com/meodai/color-names/blob/master/dist/colornames.csv)
-def colorByName(ctx, name):
+def colorByName(name):
     # Replace any underscores in the name with spaces and make it lowercase
     name = name.replace("_", " ")
     name = name.lower()
