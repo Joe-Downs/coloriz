@@ -20,6 +20,19 @@ def hexToRGB(hexValue):
 
 # =============================== Color Commands ===============================
 
+# parseHex() parses a user's hex input into three integers. It checks to make
+# sure it is a valid hex code and converts it to an RGB triplet (via hexToRGB())
+# in the form of three values returned: red, green, blue. If it's not a valid
+# hex code, raise an error with some relevant information.
+def parseHex(hexInput):
+    # Pattern to find exactly six digits or lower- and uppercase characters A-F
+    hexPattern = "#[0-9,a-f,A-F]{6,6}"
+    hexSearch = re.search(hexPattern, hexInput)
+    if hexSearch == None:
+        raise ValueError(f"{hexInput} is not a valid hex code")
+    else:
+        return hexToRGB(hexSearch.group())
+
 # parseRGB() parses a user's input into three integers. It checks to makes sure
 # the triplet is well-formed and within bounds [0,255]. If everything checks out,
 # the red, green, and blue values are returned (in order); if not, errors with
@@ -32,10 +45,6 @@ def parseRGB(rgbInput):
     # digit."
     numPattern = r"[\d]{1,3}"
     result = re.findall(numPattern, rgbInput)
-    # If the regex finds nothing, that means there wasn't a single digit in the
-    # input, assume the user wanted a named color.
-    if len(result) == 0:
-        raise NameError("No integers were found in {rgbInput}")
     # Check that ONLY three numbers were found.
     if len(result)  != 3:
         raise ValueError("An RGB triplet should only have three integers")
@@ -51,40 +60,35 @@ def parseRGB(rgbInput):
 # the color assigned or raises an error with relevant info on what went wrong;
 # this error can be printed out by the bot as a message to the user.
 async def colorSet(ctx, args):
-    # If there's only one argument, it *should* either be a hex code or a named
-    # color.
-    if len(args) == 1:
-        # If it begins with a '#' it should be a hex code; if it doesn't, it
-        # might be a named color.
-        if args[0].startswith("#"):
-            try:
-                red, green, blue = hexToRGB(args[0])
-            except ValueError as hexError:
-                return hexError
-        else:
-            # See if it's a named color, if not, try to parse it into RGB
-            try:
-                red, green, blue =  colorCommands.colorByName(ctx, args[0])
-            except NameError as colorNameError:
-                try:
-                    red, green, blue = parseRGB(args[0])
-                except NameError:
-                    # If a NameError is caught from parseRGB(), there were no
-                    # digits found in the input, thus we're assuming the user
-                    # wanted a named color. Return the error message from
-                    # colorByName() saying such.
-                    return colorNameError
-                except ValueError as parseError:
-                    return parseError
-    else:
-        # Combine the rest of the arguments and parse them with parseRGB().
-        arguments = ""
+    # Combine the arguments into one string so it can easily be parsed with
+    # regex. Remove trailing / leading whitespace after combining.
+    arguments = ""
+    for arg in args:
+        arguments += f"{arg} "
+    arguments = arguments.strip()
+    # This pattern is used to check if there are at least two sets of numbers
+    # separated by non-numeric characters. If there are, then we can be pretty
+    # confident that it is not a named color and parseRGB() can be called. Thus,
+    # we can return any errors thrown by parseRGB().
+    rgbPattern = r"[\D]*[0-9]{1,}[\D]{1,}[0-9]{1,}[\D]*[0-9]{1,}[\D]*"
+    # If it starts with a '#', try to parse it as a hex code. If not, check if
+    # it could be a valid RGB triplet with the above regex pattern. If it's not,
+    # then see if it's a named color.
+    if arguments.startswith("#"):
         try:
-            for arg in args:
-                arguments += f"{arg} "
+            red, green, blue = parseHex(arguments)
+        except ValueError as hexError:
+            return hexError
+    elif re.search(rgbPattern, arguments):
+        try:
             red, green, blue = parseRGB(arguments)
-        except ValueError as parseError:
-            return parseError
+        except ValueError as rgbError:
+            return rgbError
+    else:
+        try:
+            red, green, blue = colorCommands.colorByName(arguments)
+        except NameError as colorNameError:
+            return colorNameError
     color = await colorCommands.assignColor(ctx, red, green, blue)
     return f"Your color is **{str(color)}**"
 
