@@ -5,6 +5,7 @@ import config
 import discord
 import sys
 from discord.ext import commands
+from pretty_help import PrettyHelp
 
 owner_ID = 174362561385332736
 botToken = config.getToken()
@@ -13,7 +14,8 @@ prefix = config.getPrefix()
 intents = discord.Intents().default()
 intents.members = True
 
-bot = commands.Bot(command_prefix = prefix, intents = intents)
+bot = commands.Bot(command_prefix = prefix, intents = intents, help_command =
+                   PrettyHelp())
 
 # Outputs a link to the table of color names, and some help
 @bot.command()
