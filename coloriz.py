@@ -36,37 +36,43 @@ async def colorhelp(ctx):
 
 # =============================== Color Commands ===============================
 
-@bot.group(name = "color", invoke_without_command = True)
-async def color(ctx, *args):
-    # Calling the command with no arguments or subcommands has the bot return a
-    # message.
-    user = ctx.message.author
-    colorMessage = colorCommands.getUserColor(ctx, user)
-    # If there are arguments passed with the command, ask the user if they
-    # wanted to set their color instead.
-    if len(args) > 0:
-        colorMessage += f"""
+class ColorCommands(commands.Cog, name = "Color Commands"):
+    def __init__(self, bot):
+        self.bot = bot
+        
+    @commands.group(name = "color", invoke_without_command = True)
+    async def color(self, ctx, *args):
+        # Calling the command with no arguments or subcommands has the bot
+        # return a message.
+        user = ctx.message.author
+        colorMessage = colorCommands.getUserColor(ctx, user)
+        # If there are arguments passed with the command, ask the user if they
+        # wanted to set their color instead.
+        if len(args) > 0:
+            colorMessage += f"""
 Colors are now assigned with ``{prefix}color set``, did you mean to do this?
 """
-    await ctx.send(colorMessage)
+        await ctx.send(colorMessage)
 
-# color set is used for setting colors based off a given hex code, RGB triplet,
-# or a named color
-@color.command()
-async def set(ctx, *args):
-    setMessage = await botCommands.colorSet(ctx, args)
-    await ctx.send(setMessage)
+    # color set is used for setting colors based off a given hex code, RGB
+    # triplet, or a named color
+    @color.command()
+    async def set(self, ctx, *args):
+        setMessage = await botCommands.colorSet(ctx, args)
+        await ctx.send(setMessage)
 
-# color random assigns the user with a completely random color.
-@color.command()
-async def random(ctx):
-    randomMessage = await botCommands.colorRandom(ctx)
-    await ctx.send(randomMessage)
+    # color random assigns the user with a completely random color.
+    @color.command()
+    async def random(self, ctx):
+        randomMessage = await botCommands.colorRandom(ctx)
+        await ctx.send(randomMessage)
 
-@color.command()
-async def clear(ctx):
-    clearMessage = await botCommands.colorClear(ctx)
-    await ctx.send(clearMessage)
+    @color.command()
+    async def clear(self, ctx):
+        clearMessage = await botCommands.colorClear(ctx)
+        await ctx.send(clearMessage)
+
+bot.add_cog(ColorCommands(bot))
 
 # ==============================================================================
 
