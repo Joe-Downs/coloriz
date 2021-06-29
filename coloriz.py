@@ -101,33 +101,50 @@ async def stats(ctx):
     message = f"**{str(ctx.guild)}** has {roleCount} color roles!"
     await ctx.send(message)
 
+# ================================ Sudo Commands ===============================
+
 sudoHelpMessage = "These commands can only be run by server admins or the bot owner\n"
 sudoHelpMessage += "exit/stop ----------- stops the bot\n"
 sudoHelpMessage += "cleanup-colors ------ removes color roles not assigned to any members"
 
 # Some 'sudo' commands can only be run by the bot owner; some by admins
-@bot.command(help = sudoHelpMessage,
-             brief = "Super secret!",
-             usage = "[exit/stop | cleanup-colors]")
-async def sudo(ctx, arg):
-    sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
-    if arg == "exit" or arg == "stop":
-        # Checks if the message was sent by the bot owner
-        # If not, tell the user and exit
+
+class SudoCommands(commands.Cog, name = "Sudo Commands"):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.group(name = "sudo", invoke_without_command = False,
+                    help = sudoHelpMessage,
+                    brief = "Super secret!",
+                    usage = "[exit/stop | cleanup-colors]")
+    async def sudo(self, ctx):
+        pass
+
+    @sudo.command(name = "shutdown")
+    async def shutdown(self, ctx):
+        sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
+        # Checks if the message was sent by the bot owner; if not, tell the user
+        # and return without shutting down.
         if (ctx.message.author.id != owner_ID):
             await ctx.send(sudoFailMessage)
-            return
         else:
             await ctx.send("Sleep mode activated...")
             print("Stopping Bot...")
             await bot.close()
             sys.exit()
-    if arg == "cleanup-colors":
+
+    @sudo.command(name = "cleanup")
+    async def cleanup(self, ctx):
+        sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
         if auth.canManageRoles(ctx):
             await ctx.send("Clearing colors...")
             await colorCommands.cleanupColors(ctx)
         else:
             await ctx.send(sudoFailMessage)
+
+bot.add_cog(SudoCommands(bot))
+
+# ============================== Testing Commands ==============================
 
 # Commands for testing various functionalities of the bot
 @bot.command()
