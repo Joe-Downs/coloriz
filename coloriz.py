@@ -1,6 +1,7 @@
 import auth
 import botCommands
 import colorCommands
+import commandConfig
 import config
 import discord
 import sys
@@ -40,7 +41,11 @@ class ColorCommands(commands.Cog, name = "Color Commands"):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.group(name = "color", invoke_without_command = True)
+    @commands.group(name = "color", invoke_without_command = True,
+                    aliases = commandConfig.getAliases("color"),
+                    brief = commandConfig.getBrief("color"),
+                    usage = commandConfig.getUsage("color"),
+                    help = commandConfig.getHelp("color"))
     async def color(self, ctx, *args):
         # Calling the command with no arguments or subcommands has the bot
         # return a message.
@@ -56,18 +61,30 @@ Colors are now assigned with ``{prefix}color set``, did you mean to do this?
 
     # color set is used for setting colors based off a given hex code, RGB
     # triplet, or a named color
-    @color.command()
+    @color.command(name = "set",
+                   aliases = commandConfig.getAliases("color set"),
+                   brief = commandConfig.getBrief("color set"),
+                   usage = commandConfig.getUsage("color set"),
+                   help = commandConfig.getHelp("color set"))
     async def set(self, ctx, *args):
         setMessage = await botCommands.colorSet(ctx, args)
         await ctx.send(setMessage)
 
     # color random assigns the user with a completely random color.
-    @color.command()
+    @color.command(name = "random",
+                   aliases = commandConfig.getAliases("color random"),
+                   brief = commandConfig.getBrief("color random"),
+                   usage = commandConfig.getUsage("color random"),
+                   help = commandConfig.getHelp("color random"))
     async def random(self, ctx):
         randomMessage = await botCommands.colorRandom(ctx)
         await ctx.send(randomMessage)
 
-    @color.command()
+    @color.command(name = "clear",
+                   aliases = commandConfig.getAliases("color clear"),
+                   brief = commandConfig.getBrief("color clear"),
+                   usage = commandConfig.getUsage("color clear"),
+                   help = commandConfig.getHelp("color clear"))
     async def clear(self, ctx):
         clearMessage = await botCommands.colorClear(ctx)
         await ctx.send(clearMessage)
