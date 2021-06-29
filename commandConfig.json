@@ -1,0 +1,54 @@
+[
+    {
+	"name": "color",
+	"aliases": ["colour"],
+	"brief": "View / set your color",
+	"usage": "",
+	"help":
+	[
+	    "Called without any other commands or arguments, this command ",
+	    "returns your current color."
+	],
+	"subcommands":
+	[
+	    {
+		"name": "clear",
+		"aliases": ["remove"],
+		"brief": "Clear your color role",
+		"usage": "",
+		"help":
+		[
+		    "Removes your color role. Plain and simple."
+		],
+		"subcommands": []
+	    },
+	    {
+		"name": "random",
+		"aliases": ["rand"],
+		"brief": "Assign a color role with a random color",
+		"usage": "",
+		"help":
+		[
+		    "Chooses three random integers between 0 and 255 and",
+		    "assigns you a new color role based off those values. ",
+		    "This will get you one color out of the 16.8 million ",
+		    "possible."
+		],
+		"subcommands": []
+	    },
+	    {
+		"name": "set",
+		"aliases": ["assign"],
+		"brief": "Assign a color role with a specific color",
+		"usage": "<#Hex Code> | <(R, G, B)> | <Color Name>",
+		"help":
+		[
+		    "There are three ways you can assign yourself a specific ",
+		    "color. With a hex code, an RGB triplet, or with a color ",
+		    "name.\nA hex code will follow the form of #AAAAAA."
+		],
+		"subcommands": []
+	    }
+	]   
+    }
+]
