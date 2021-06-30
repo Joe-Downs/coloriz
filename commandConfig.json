@@ -50,5 +50,45 @@
 		"subcommands": []
 	    }
 	]   
+    },
+    {
+	"name": "sudo",
+	"aliases": [""],
+	"brief": "Super secret!",
+	"usage": "",
+	"help":
+	[
+	    "Called by itself, sudo has no inherent functionality other than ",
+	    "to group admin / owner commands together."
+	],
+	"subcommands":
+	[
+	    {
+		"name": "shutdown",
+		"aliases": ["exit", "stop"],
+		"brief": "Shutdown the bot",
+		"usage": "",
+		"help":
+		[
+		    "Shuts the bot down.\n",
+		    "Can only be executed by the bot owner."
+		],
+		"subcommands": []
+	    },
+	    {
+		"name": "cleanup",
+		"aliases": ["clean"],
+		"brief": "Cleanup unused color roles",
+		"usage": "",
+		"help":
+		[
+		    "Removes any color roles that are not currently assigned ",
+		    "to any users.\n",
+		    "Can be executed by any mod / admin with correct ",
+		    "permissions to manage other users' roles."
+		],
+		"subcommands": []
+	    }
+	]
     }
 ]
