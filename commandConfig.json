@@ -64,18 +64,6 @@
 	"subcommands":
 	[
 	    {
-		"name": "shutdown",
-		"aliases": ["exit", "stop"],
-		"brief": "Shutdown the bot",
-		"usage": "",
-		"help":
-		[
-		    "Shuts the bot down.\n",
-		    "Can only be executed by the bot owner."
-		],
-		"subcommands": []
-	    },
-	    {
 		"name": "cleanup",
 		"aliases": ["clean"],
 		"brief": "Cleanup unused color roles",
@@ -86,6 +74,18 @@
 		    "to any users.\n",
 		    "Can be executed by any mod / admin with correct ",
 		    "permissions to manage other users' roles."
+		],
+		"subcommands": []
+	    },
+	    {
+		"name": "shutdown",
+		"aliases": ["exit", "stop"],
+		"brief": "Shutdown the bot",
+		"usage": "",
+		"help":
+		[
+		    "Shuts the bot down.\n",
+		    "Can only be executed by the bot owner."
 		],
 		"subcommands": []
 	    }
