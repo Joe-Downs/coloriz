@@ -103,10 +103,6 @@ async def stats(ctx):
 
 # ================================ Sudo Commands ===============================
 
-sudoHelpMessage = "These commands can only be run by server admins or the bot owner\n"
-sudoHelpMessage += "exit/stop ----------- stops the bot\n"
-sudoHelpMessage += "cleanup-colors ------ removes color roles not assigned to any members"
-
 # Some 'sudo' commands can only be run by the bot owner; some by admins
 
 class SudoCommands(commands.Cog, name = "Sudo Commands"):
@@ -114,13 +110,17 @@ class SudoCommands(commands.Cog, name = "Sudo Commands"):
         self.bot = bot
 
     @commands.group(name = "sudo", invoke_without_command = False,
-                    help = sudoHelpMessage,
-                    brief = "Super secret!",
-                    usage = "[exit/stop | cleanup-colors]")
+                    brief = commandConfig.getBrief("sudo"),
+                    usage = commandConfig.getUsage("sudo"),
+                    help = commandConfig.getHelp("sudo"))
     async def sudo(self, ctx):
         pass
 
-    @sudo.command(name = "shutdown")
+    @sudo.command(name = "shutdown",
+                  aliases = commandConfig.getAliases("sudo shutdown"),
+                  brief = commandConfig.getBrief("sudo shutdown"),
+                  usage = commandConfig.getUsage("sudo shutdown"),
+                  help = commandConfig.getHelp("sudo shutdown"))
     async def shutdown(self, ctx):
         sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
         # Checks if the message was sent by the bot owner; if not, tell the user
@@ -133,7 +133,11 @@ class SudoCommands(commands.Cog, name = "Sudo Commands"):
             await bot.close()
             sys.exit()
 
-    @sudo.command(name = "cleanup")
+    @sudo.command(name = "cleanup",
+                  aliases = commandConfig.getAliases("sudo cleanup"),
+                  brief = commandConfig.getBrief("sudo cleanup"),
+                  usage = commandConfig.getUsage("sudo cleanup"),
+                  help = commandConfig.getHelp("sudo cleanup"))
     async def cleanup(self, ctx):
         sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
         if auth.canManageRoles(ctx):
