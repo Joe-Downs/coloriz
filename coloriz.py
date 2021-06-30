@@ -116,6 +116,19 @@ class SudoCommands(commands.Cog, name = "Sudo Commands"):
     async def sudo(self, ctx):
         pass
 
+    @sudo.command(name = "cleanup",
+                  aliases = commandConfig.getAliases("sudo cleanup"),
+                  brief = commandConfig.getBrief("sudo cleanup"),
+                  usage = commandConfig.getUsage("sudo cleanup"),
+                  help = commandConfig.getHelp("sudo cleanup"))
+    async def cleanup(self, ctx):
+        sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
+        if auth.canManageRoles(ctx):
+            await ctx.send("Clearing colors...")
+            await colorCommands.cleanupColors(ctx)
+        else:
+            await ctx.send(sudoFailMessage)
+
     @sudo.command(name = "shutdown",
                   aliases = commandConfig.getAliases("sudo shutdown"),
                   brief = commandConfig.getBrief("sudo shutdown"),
@@ -132,19 +145,6 @@ class SudoCommands(commands.Cog, name = "Sudo Commands"):
             print("Stopping Bot...")
             await bot.close()
             sys.exit()
-
-    @sudo.command(name = "cleanup",
-                  aliases = commandConfig.getAliases("sudo cleanup"),
-                  brief = commandConfig.getBrief("sudo cleanup"),
-                  usage = commandConfig.getUsage("sudo cleanup"),
-                  help = commandConfig.getHelp("sudo cleanup"))
-    async def cleanup(self, ctx):
-        sudoFailMessage = f"**{ctx.message.author.name}** {auth.failMessage}"
-        if auth.canManageRoles(ctx):
-            await ctx.send("Clearing colors...")
-            await colorCommands.cleanupColors(ctx)
-        else:
-            await ctx.send(sudoFailMessage)
 
 bot.add_cog(SudoCommands(bot))
 
