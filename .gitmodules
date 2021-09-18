@@ -1,3 +1,0 @@
-[submodule "database/sqlpyte3"]
-	path = database/sqlpyte3
-	url = git@github.com:Joe-Downs/sqlpyte3.git
