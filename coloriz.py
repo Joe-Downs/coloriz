@@ -4,7 +4,8 @@ import colorCommands
 import commandConfig
 import config
 import discord
-import sys
+import stats
+import  sys
 from discord.ext import commands
 from pretty_help import PrettyHelp
 
@@ -91,16 +92,19 @@ Colors are now assigned with ``{prefix}color set``, did you mean to do this?
 
 bot.add_cog(ColorCommands(bot))
 
-# ==============================================================================
+# =============================== Stats Commands ===============================
+# Commands for presenting / calculating stats for a user / server
 
-statsHelpMessage = "Show stats about this server's color roles"
-@bot.command(help = statsHelpMessage,
-             brief = "Get some stats!")
-async def stats(ctx):
-    roleCount = colorCommands.countColorRoles(ctx)
-    message = f"**{str(ctx.guild)}** has {roleCount} color roles!"
-    await ctx.send(message)
+class StatsCommands(commands.Cog, name = "Stats Commands"):
+    def __init__(self, bot):
+        self.bot = bot
 
+    @commands.group(name = "stats", invoke_without_command = True)
+    async def stats(self, ctx):
+        statsEmbed = stats.createEmbed(ctx)
+        await ctx.send(embed = statsEmbed)
+
+bot.add_cog(StatsCommands(bot))
 # ================================ Sudo Commands ===============================
 
 # Some 'sudo' commands can only be run by the bot owner; some by admins
