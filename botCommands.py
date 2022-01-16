@@ -3,6 +3,7 @@ import re
 # Third-Party Modules
 # Custom Modules
 import colorCommands
+import stats
 # All commands (and their necessary functions) for the coloriz bot
 
 # Returns a three values (red, green, blue) from a given hex color value
@@ -90,6 +91,7 @@ async def colorSet(ctx, args):
         except NameError as colorNameError:
             return colorNameError
     color = await colorCommands.assignColor(ctx, red, green, blue)
+    stats.recordStats(ctx)
     return f"Your color is **{str(color)}**"
 
 # colorRandom() sets a user's color to a completely random color. It takes no
@@ -100,12 +102,14 @@ async def colorRandom(ctx):
     # them.
     red, green, blue = colorCommands.randomColor()
     color = await colorCommands.assignColor(ctx, red, green, blue)
+    stats.recordStats(ctx)
     return f"Your color is **{str(color)}**"
 
 # colorClear() clears the user's color. It takes no arguments other than ctx and
 # returns a string saying the user's color was cleared.
 async def colorClear(ctx):
     await colorCommands.removeColorRole(ctx)
+    stats.recordStats(ctx)
     return "Your color role has been cleared"
 
 # ==============================================================================
