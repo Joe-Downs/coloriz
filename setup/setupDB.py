@@ -14,7 +14,7 @@ sqlID = "sqlID INTEGER PRIMARY KEY AUTOINCREMENT"
 # Create the table for color history.
 curs.execute(f"""
 CREATE TABLE colorHistory ({sqlID}, userID INTEGER, serverID INTEGER, color
-TEXT, timestamp TEXT)""")
+TEXT, timestamp TEXT, length INTEGER)""")
 
 conn.commit()
 conn.close()
