@@ -91,7 +91,7 @@ async def colorSet(ctx, args):
         except NameError as colorNameError:
             return colorNameError
     color = await colorCommands.assignColor(ctx, red, green, blue)
-    stats.recordStats(ctx)
+    stats.recordStats(ctx, str(color))
     return f"Your color is **{str(color)}**"
 
 # colorRandom() sets a user's color to a completely random color. It takes no
@@ -102,14 +102,14 @@ async def colorRandom(ctx):
     # them.
     red, green, blue = colorCommands.randomColor()
     color = await colorCommands.assignColor(ctx, red, green, blue)
-    stats.recordStats(ctx)
+    stats.recordStats(ctx, str(color))
     return f"Your color is **{str(color)}**"
 
 # colorClear() clears the user's color. It takes no arguments other than ctx and
 # returns a string saying the user's color was cleared.
 async def colorClear(ctx):
     await colorCommands.removeColorRole(ctx)
-    stats.recordStats(ctx)
+    stats.recordStats(ctx, None)
     return "Your color role has been cleared"
 
 # ==============================================================================
