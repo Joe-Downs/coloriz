@@ -5,6 +5,7 @@
 import config
 from datetime import datetime
 import discord
+import math
 import sqlite3
 
 conn = sqlite3.connect("coloriz.db")
@@ -77,10 +78,83 @@ INSERT INTO colorHistory VALUES (NULL, ?, ?, ?, ?, ?)
     curs.execute(sqlCommand, (userID, serverID, color, str(timestamp), -1))
     conn.commit()
 
+# ============================ Calculating Functions ===========================
+# Functions for analyzing the database and returning datapoints to be used in
+# the embed sent back to the user.
+
+# Takes a length in seconds, and converts that to a nicer, more general format
+# ("5 minutes", "10 days", "1 year", etc.)
+def prettyLength(length):
+    # Convert the length (a float originally with microseconds), because we
+    # don't need to send that much precision in the embed.
+    length = int(length)
+    if length < 60:
+        prettyLengthString = f"{length} second"
+    elif length < 3600:
+        prettyLengthString = f"{math.floor(length/60)} minute"
+    elif length < 86400:
+        prettyLengthString = f"{math.floor(length/3600)} hour"
+    elif length < 604800:
+        prettyLengthString = f"{math.floor(length/86400)} day"
+    elif length < 2628000:
+        prettyLengthString = f"{math.floor(length/604800)} week"
+    elif length < 31540000:
+        prettyLengthString = f"{math.floor(length/2628000)} month"
+    else:
+        prettyLengthString = f"{math.floor(length/31540000)} year"
+    # If the value is not 1, make the unit plural
+    if not prettyLengthString.startswith("1 "):
+        prettyLengthString = prettyLengthString + "s"
+    return prettyLengthString
+
+# Given a userID, calcLongestColor() returns a string of the color the user had
+# for the longest time, and the time they had it.
+def calcLongestColor(userID, serverID):
+    sqlCommand = f"""
+SELECT max(length), color FROM colorHistory WHERE userID=? AND serverID=?
+"""
+    curs.execute(sqlCommand, (userID, serverID))
+    result = curs.fetchone()
+    maxLength = result[0]
+    color = result[1]
+    time = prettyLength(maxLength)
+    longestColorString = f"{color} - {time}"
+    return longestColorString
+
+# Given a userID, calcShortestColor() returns a string of the color the user had
+# for the longest time, and the time they had it.
+def calcShortestColor(userID, serverID):
+    sqlCommand = f"""
+SELECT min(length), color FROM colorHistory WHERE userID=? AND serverID=? AND 
+NOT length=-1
+"""
+    curs.execute(sqlCommand, (userID, serverID))
+    result = curs.fetchone()
+    minLength = result[0]
+    color = result[1]
+    time = prettyLength(minLength)
+    shortestColorString = f"{color} - {time}"
+    return shortestColorString
+
+# ==============================================================================
+
 # Given the ctx, this creates an embed, fills it with some info provided in ctx
 # (author, color, etc.), and returns an Embed object.
 def createEmbed(ctx):
-    authorNick = ctx.author.display_name
-    authorColor = ctx.author.color
-    embed = discord.Embed(title=f"Stats for {authorNick}", color = authorColor)
+    author = ctx.author
+    authorNick = author.display_name
+    authorUsername = author.name
+    authorColor = author.color
+    authorAvatar = str(author.avatar_url)
+    userID = author.id
+    serverID = ctx.guild.id
+    longestColorString = calcLongestColor(userID, serverID)
+    shortestColorString = calcShortestColor(userID, serverID)
+    embed = discord.Embed(description = f"Stats for {authorNick}", color =
+                          authorColor)
+    embed.set_author(name = authorUsername, icon_url = authorAvatar)
+    embed.add_field(name = "Longest Color", value = longestColorString,
+                    inline = True)
+    embed.add_field(name = "Shortest Color", value = shortestColorString,
+                    inline = True)
     return embed
