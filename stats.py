@@ -148,13 +148,19 @@ def createEmbed(ctx):
     authorAvatar = str(author.avatar_url)
     userID = author.id
     serverID = ctx.guild.id
-    longestColorString = calcLongestColor(userID, serverID)
-    shortestColorString = calcShortestColor(userID, serverID)
     embed = discord.Embed(description = f"Stats for {authorNick}", color =
                           authorColor)
     embed.set_author(name = authorUsername, icon_url = authorAvatar)
-    embed.add_field(name = "Longest Color", value = longestColorString,
-                    inline = True)
-    embed.add_field(name = "Shortest Color", value = shortestColorString,
-                    inline = True)
+    # If the user doesn't have a color, then the SQL commands in the calc...()
+    # functions will return a NoneType, which will raise a TypeError. For now,
+    # we'll just do this, and add a little nicer solution later.
+    try:
+        longestColorString = calcLongestColor(userID, serverID)
+        shortestColorString = calcShortestColor(userID, serverID)
+        embed.add_field(name = "Longest Color", value = longestColorString,
+                        inline = True)
+        embed.add_field(name = "Shortest Color", value = shortestColorString,
+                        inline = True)
+    except TypeError:
+        embed.add_field(name = "You haven't had any colors on this server", value = "D:!!!")
     return embed
