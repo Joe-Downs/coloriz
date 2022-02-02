@@ -107,34 +107,23 @@ def prettyLength(length):
         prettyLengthString = prettyLengthString + "s"
     return prettyLengthString
 
-# Given a userID, calcLongestColor() returns a string of the color the user had
-# for the longest time, and the time they had it.
-def calcLongestColor(userID, serverID):
-    sqlCommand = f"""
-SELECT max(length), color FROM colorHistory WHERE userID=? AND serverID=?
+# Given a userID and serverID, calcColorExtremes() calculates the shortest and
+# longest color the user had on that server. It returns two strings for the
+# longest and shortest colors, respectively.
+def calcColorExtremes(userID, serverID):
+    returnStrings = []
+    for extreme in ["max", "min"]:
+        sqlCommand = f"""
+SELECT {extreme}(length), color FROM colorHistory WHERE userID=? AND serverID=? 
+AND NOT length=-1
 """
-    curs.execute(sqlCommand, (userID, serverID))
-    result = curs.fetchone()
-    maxLength = result[0]
-    color = result[1]
-    time = prettyLength(maxLength)
-    longestColorString = f"{color} - {time}"
-    return longestColorString
-
-# Given a userID, calcShortestColor() returns a string of the color the user had
-# for the longest time, and the time they had it.
-def calcShortestColor(userID, serverID):
-    sqlCommand = f"""
-SELECT min(length), color FROM colorHistory WHERE userID=? AND serverID=? AND 
-NOT length=-1
-"""
-    curs.execute(sqlCommand, (userID, serverID))
-    result = curs.fetchone()
-    minLength = result[0]
-    color = result[1]
-    time = prettyLength(minLength)
-    shortestColorString = f"{color} - {time}"
-    return shortestColorString
+        curs.execute(sqlCommand, (userID, serverID))
+        result = curs.fetchone()
+        length = result[0]
+        color = result[1]
+        time = prettyLength(length)
+        returnStrings.append(f"{color} - {time}")
+    return returnStrings[0], returnStrings[1]
 
 # ==============================================================================
 
@@ -155,8 +144,7 @@ def createEmbed(ctx):
     # functions will return a NoneType, which will raise a TypeError. For now,
     # we'll just do this, and add a little nicer solution later.
     try:
-        longestColorString = calcLongestColor(userID, serverID)
-        shortestColorString = calcShortestColor(userID, serverID)
+        longestColorString, shortestColorString = calcColorExtremes(userID, serverID)
         embed.add_field(name = "Longest Color", value = longestColorString,
                         inline = True)
         embed.add_field(name = "Shortest Color", value = shortestColorString,
