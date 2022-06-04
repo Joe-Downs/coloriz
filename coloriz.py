@@ -162,4 +162,16 @@ async def test(ctx, *args):
     if args[0] == "perm" or args[0] == "perms":
         if args[1] == "manage_roles":
             await ctx.send(f"{auth.canManageRoles(ctx)}")
+
+# ================================ Fun Commands ================================
+
+# Commands for fun that serve no useful purpose
+@bot.command(name = "ed",
+             brief = commandConfig.getBrief("ed"),
+             usage = commandConfig.getUsage("ed"),
+             help = commandConfig.getHelp("ed"))
+async def ed(ctx, *args):
+    await ctx.send("?")
+
 bot.run(botToken)
+
