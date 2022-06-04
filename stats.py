@@ -11,12 +11,18 @@ import sqlite3
 conn = sqlite3.connect("coloriz.db")
 curs = conn.cursor()
 
-# Given a user, server ID, and the current timestamp updateStats() updates the
-# entry in the table for the user's current color: editing the length from -1 to
-# however many seconds they had the color for. (We could calculate the timestamp
-# when needed by calling datetime.utcnow(), but for consistency's sake, we're
-# using the same timestamp that will be used in the new database record.)
-def updateStats(userID, serverID, curColor, curDatetime):
+# Given a previous timestamp, this calculates how long ago (in seconds) the
+# previous timestamp was. Returns said length.
+def calcLengthSec(prevTimestamp):
+    curDatetime = datetime.utcnow()
+    prevDatetime = datetime.fromisoformat(prevTimestamp)
+    length = (curDatetime - prevDatetime).total_seconds()
+    return length
+
+# Given a user, server ID, and the user's current color, updateStats() updates
+# the entry in the table for the user's current color: editing the length from
+# -1 to however many seconds they had the color for.
+def updateStats(userID, serverID, curColor):
     # If an entry has a length of -1, then that is the user's currently active
     # color, so we'll need update with how long they had that one.
     sqlCommand = f"""
@@ -37,8 +43,7 @@ SELECT color, timestamp FROM colorHistory WHERE length=-1 AND userID=? AND serve
     # add a new record.
     if prevColor == curColor:
         return True
-    prevDatetime = datetime.fromisoformat(prevTimestamp)
-    length = (curDatetime - prevDatetime).total_seconds()
+    length = calcLengthSec(prevTimestamp)
     updateCommand = f"""
 UPDATE colorHistory SET length=? WHERE length=-1 AND userID=? AND serverID=?
 """
@@ -52,7 +57,6 @@ UPDATE colorHistory SET length=? WHERE length=-1 AND userID=? AND serverID=?
 def recordStats(ctx, color):
     userID = ctx.message.author.id
     serverID = ctx.guild.id
-    timestamp = datetime.utcnow()
     # We want all the colors to be uppercase (I like how that looks) so we can
     # safely compare two colors later. It goes in a try block so that we can
     # catch the AttributeError if color is None (like when the user clears their
@@ -69,8 +73,9 @@ def recordStats(ctx, color):
     # Regardless if there's an error or not, we still want to update the stats.
     finally:
         # If it returns true, we don't need to add a new record into the table.
-        if updateStats(userID, serverID, color, timestamp):
+        if updateStats(userID, serverID, color):
             return
+    timestamp = datetime.utcnow()
     # colorHistory columns go: sqlID, userID, serverID, color, timestamp, length
     sqlCommand = f"""
 INSERT INTO colorHistory VALUES (NULL, ?, ?, ?, ?, ?)
@@ -121,7 +126,6 @@ AND NOT length=-1
         result = curs.fetchone()
         length = result[0]
         color = result[1]
-        time = prettyLength(length)
         returnStrings.append(f"{color} - {time}")
     return returnStrings[0], returnStrings[1]
 
