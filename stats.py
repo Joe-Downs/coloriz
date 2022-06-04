@@ -119,7 +119,7 @@ def calcColorExtremes(userID, serverID):
     returnStrings = []
     for extreme in ["max", "min"]:
         sqlCommand = f"""
-SELECT {extreme}(length), color FROM colorHistory WHERE userID=? AND serverID=? 
+SELECT {extreme}(length), color FROM colorHistory WHERE userID=? AND serverID=?
 AND NOT length=-1
 """
         curs.execute(sqlCommand, (userID, serverID))
