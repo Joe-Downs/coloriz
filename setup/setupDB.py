@@ -3,7 +3,8 @@
 
 import sqlite3
 
-conn = sqlite3.connect("../coloriz.db")
+# The database is created relative to where the command is called.
+conn = sqlite3.connect("coloriz.db")
 curs = conn.cursor()
 
 # Shorthand string used in every table to create the sqlID column, which gives
