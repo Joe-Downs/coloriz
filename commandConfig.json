@@ -90,5 +90,13 @@
 		"subcommands": []
 	    }
 	]
+    },
+    {
+	"name": "ed",
+	"aliases": [""],
+	"brief": "?",
+	"usage": "",
+	"help": "?",
+	"subcommands": []
     }
 ]
