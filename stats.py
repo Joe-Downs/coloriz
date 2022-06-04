@@ -126,9 +126,43 @@ AND NOT length=-1
         result = curs.fetchone()
         length = result[0]
         color = result[1]
-        returnStrings.append(f"{color} - {time}")
+        returnStrings.append((color, length))
     return returnStrings[0], returnStrings[1]
 
+# Given a userID and serverID, calculate the length of the user's current color,
+# and return the length and color, respectively. This will be compared to the
+# longest/shortest length from the database, so the true longest/shortest can be
+# chosen, allowing for a "live" length.
+def calcCurrentLength(userID, serverID):
+    sqlCommand = f"""
+SELECT color, timestamp FROM colorHistory WHERE userID=? AND serverID=? AND
+LENGTH=-1
+"""
+    curs.execute(sqlCommand, (userID, serverID))
+    result = curs.fetchone()
+    color = result[0]
+    start = result[1]
+    length = calcLengthSec(start)
+    return (color, length)
+
+# Given the current length of the user's color, the longest/shortest database
+# length, check which ones are the true extremes. e.g., if the current length is
+# shorter than the database length, the current length is the true
+# shortest. Returns the strings for the longest and shortest colors
+def checkExtremes(currentColor, longestColor, shortestColor):
+    current = currentColor[1]
+    currentName = currentColor[0]
+    longest = longestColor[1]
+    longestName = longestColor[0]
+    shortest = shortestColor[1]
+    shortestName = shortestColor[0]
+    shortestColorString = f"{shortestName} - {prettyLength(shortest)} "
+    longestColorString = f"{longestName} - {prettyLength(longest)}"
+    if current > longest:
+        longestColorString = f"{currentName} - {prettyLength(current)}\nThat's your current color! :o"
+    elif current < shortest:
+        shortestColorString = f"{currentName} - {prettyLength(current)}\nThat's your current color! :o"
+    return longestColorString, shortestColorString
 # ==============================================================================
 
 # Given the ctx, this creates an embed, fills it with some info provided in ctx
@@ -148,7 +182,11 @@ def createEmbed(ctx):
     # functions will return a NoneType, which will raise a TypeError. For now,
     # we'll just do this, and add a little nicer solution later.
     try:
-        longestColorString, shortestColorString = calcColorExtremes(userID, serverID)
+        longestColor, shortestColor = calcColorExtremes(userID, serverID)
+        curColor = calcCurrentLength(userID, serverID)
+        longestColorString, shortestColorString = checkExtremes(curColor,
+                                                                longestColor,
+                                                                shortestColor)
         embed.add_field(name = "Longest Color", value = longestColorString,
                         inline = True)
         embed.add_field(name = "Shortest Color", value = shortestColorString,
