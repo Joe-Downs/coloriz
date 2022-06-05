@@ -165,19 +165,18 @@ def checkExtremes(currentColor, longestColor, shortestColor):
     return longestColorString, shortestColorString
 # ==============================================================================
 
-# Given the ctx, this creates an embed, fills it with some info provided in ctx
-# (author, color, etc.), and returns an Embed object.
-def createEmbed(ctx):
-    author = ctx.author
-    authorNick = author.display_name
-    authorUsername = author.name
-    authorColor = author.color
-    authorAvatar = str(author.avatar_url)
-    userID = author.id
-    serverID = ctx.guild.id
-    embed = discord.Embed(description = f"Stats for {authorNick}", color =
-                          authorColor)
-    embed.set_author(name = authorUsername, icon_url = authorAvatar)
+# Given a serverID and user object, this creates an embed, fills it with some
+# info provided from the object (name, color, etc.), and returns an Embed
+# object.
+def createEmbed(serverID, user):
+    userID = user.id
+    userNick = user.display_name
+    username = user.name
+    userColor = user.color
+    userAvatar = str(user.avatar_url)
+    embed = discord.Embed(description = f"Stats for {userNick}", color =
+                          userColor)
+    embed.set_author(name = username, icon_url = userAvatar)
     # If the user doesn't have a color, then the SQL commands in the calc...()
     # functions will return a NoneType, which will raise a TypeError. For now,
     # we'll just do this, and add a little nicer solution later.
