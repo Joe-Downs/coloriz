@@ -187,6 +187,9 @@ def createEmbed(ctx):
         longestColorString, shortestColorString = checkExtremes(curColor,
                                                                 longestColor,
                                                                 shortestColor)
+        currentColorString = f"{curColor[0]} - {prettyLength(curColor[1])}"
+        embed.add_field(name = "Current Color", value = currentColorString,
+                        inline = False)
         embed.add_field(name = "Longest Color", value = longestColorString,
                         inline = True)
         embed.add_field(name = "Shortest Color", value = shortestColorString,
