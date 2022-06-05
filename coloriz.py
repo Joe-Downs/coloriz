@@ -4,6 +4,7 @@ import colorCommands
 import commandConfig
 import config
 import discord
+import re
 import stats
 import  sys
 from discord.ext import commands
@@ -100,9 +101,20 @@ class StatsCommands(commands.Cog, name = "Stats Commands"):
         self.bot = bot
 
     @commands.group(name = "stats", invoke_without_command = True)
-    async def stats(self, ctx):
-        statsEmbed = stats.createEmbed(ctx)
-        await ctx.send(embed = statsEmbed)
+    async def stats(self, ctx, *args):
+        # If the user mentions someone else, use that instead of the author of
+        # the message.
+        if len(args) > 0:
+            userID = int(re.findall("[0-9]+", args[0])[0])
+        else:
+            userID = ctx.author.id
+        user = ctx.guild.get_member(userID)
+        # If the user is None, then they don't exist.
+        if user == None:
+            await ctx.send("Sorry, that user does not exist, or that isn't a valid ID. :(")
+        else:
+            statsEmbed = stats.createEmbed(ctx.guild.id, user)
+            await ctx.send(embed = statsEmbed)
 
 bot.add_cog(StatsCommands(bot))
 # ================================ Sudo Commands ===============================
