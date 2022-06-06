@@ -42,7 +42,7 @@ async def colorhelp(ctx):
 class ColorCommands(commands.Cog, name = "Color Commands"):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.group(name = "color", invoke_without_command = True,
                     aliases = commandConfig.getAliases("color"),
                     brief = commandConfig.getBrief("color"),
@@ -186,4 +186,3 @@ async def ed(ctx, *args):
     await ctx.send("?")
 
 bot.run(botToken)
-
