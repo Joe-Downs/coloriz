@@ -10,7 +10,7 @@ def getBotTopRoleNum(ctx):
     botRoles = botMember.roles
     topBotRole = botRoles[len(botRoles) - 1]
     return ctx.guild.roles.index(topBotRole)
-        
+
 
 async def assignColor(ctx, red, green, blue):
     color = discord.Color.from_rgb(int(red), int(green), int(blue))
@@ -27,7 +27,7 @@ async def assignColor(ctx, red, green, blue):
             await user.add_roles(role)
             needsNewRole = False
             break
-        
+
     if needsNewRole:
         role = await ctx.guild.create_role(name = str(color), color = color)
         await user.add_roles(role)
