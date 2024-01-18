@@ -108,7 +108,9 @@ async def colorSearch(ctx, args):
     returnString = f"Found {len(matches)} Colors in {timeTaken}s:\n```"
     for match in matches[0:50]:
         returnString += f"- {match}\n"
-    returnString += "Only showing 50 colors...```"
+    if len(matches) > 50:
+        returnString += "Only showing first 50 colors..."
+    returnString += "```"
     return returnString
 
 # colorRandom() sets a user's color to a completely random color. It takes no
