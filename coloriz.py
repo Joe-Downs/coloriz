@@ -1,3 +1,4 @@
+import asyncio
 import auth
 import botCommands
 import colorCommands
@@ -16,6 +17,7 @@ prefix = config.getPrefix()
 
 intents = discord.Intents().default()
 intents.members = True
+intents.message_content = True
 
 bot = commands.Bot(command_prefix = prefix, intents = intents, help_command =
                    PrettyHelp())
@@ -91,7 +93,6 @@ Colors are now assigned with ``{prefix}color set``, did you mean to do this?
         clearMessage = await botCommands.colorClear(ctx)
         await ctx.send(clearMessage)
 
-bot.add_cog(ColorCommands(bot))
 
 # =============================== Stats Commands ===============================
 # Commands for presenting / calculating stats for a user / server
@@ -116,7 +117,7 @@ class StatsCommands(commands.Cog, name = "Stats Commands"):
             statsEmbed = stats.createEmbed(ctx.guild.id, user)
             await ctx.send(embed = statsEmbed)
 
-bot.add_cog(StatsCommands(bot))
+
 # ================================ Sudo Commands ===============================
 
 # Some 'sudo' commands can only be run by the bot owner; some by admins
@@ -162,8 +163,6 @@ class SudoCommands(commands.Cog, name = "Sudo Commands"):
             await bot.close()
             sys.exit()
 
-bot.add_cog(SudoCommands(bot))
-
 # ============================== Testing Commands ==============================
 
 # Commands for testing various functionalities of the bot
@@ -185,4 +184,11 @@ async def test(ctx, *args):
 async def ed(ctx, *args):
     await ctx.send("?")
 
+
+async def setup(bot):
+    await bot.add_cog(SudoCommands(bot))
+    await bot.add_cog(StatsCommands(bot))
+    await bot.add_cog(ColorCommands(bot))
+
+asyncio.run(setup(bot))
 bot.run(botToken)
