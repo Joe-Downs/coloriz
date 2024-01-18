@@ -1,8 +1,10 @@
 # Python Modules
 import re
+import time
 # Third-Party Modules
 # Custom Modules
 import colorCommands
+import namedColors
 import stats
 # All commands (and their necessary functions) for the coloriz bot
 
@@ -93,6 +95,21 @@ async def colorSet(ctx, args):
     color = await colorCommands.assignColor(ctx, red, green, blue)
     stats.recordStats(ctx, str(color))
     return f"Your color is **{str(color)}**"
+
+async def colorSearch(ctx, args):
+    arguments = ""
+    for arg in args:
+        arguments += f"{arg} "
+    arguments = arguments.strip()
+    startTime = time.time()
+    matches = namedColors.searchNamedColors(arguments)
+    endTime = time.time()
+    timeTaken = "{:.4}".format(endTime - startTime)
+    returnString = f"Found {len(matches)} Colors in {timeTaken}s:\n```"
+    for match in matches[0:50]:
+        returnString += f"- {match}\n"
+    returnString += "Only showing 50 colors...```"
+    return returnString
 
 # colorRandom() sets a user's color to a completely random color. It takes no
 # arguments other than the ctx and returns a string that states what the user's

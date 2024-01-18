@@ -65,3 +65,11 @@ def findNamedColorHex(color):
     # found, raise an error
     raise NameError(f"\"{color}\" is not a named color")
 
+# Search through the list of named colors and return a list of color names that
+# match the given search term.
+def searchNamedColors(name):
+    matches = []
+    for namedColor in colorDictList:
+        if name in namedColor["name"].lower():
+            matches.append(namedColor["name"])
+    return matches

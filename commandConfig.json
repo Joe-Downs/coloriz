@@ -48,8 +48,20 @@
 		    "name.\nA hex code will follow the form of #AAAAAA."
 		],
 		"subcommands": []
+	    },
+              {
+		"name": "search",
+		"aliases": ["lookup"],
+		"brief": "Searches named colors for the given name",
+		"usage": "<Search Term>",
+		"help":
+		[
+		    "This command does not assign colors. It merely returns ",
+                    "the names that match the given search term."
+		],
+		"subcommands": []
 	    }
-	]   
+	]
     },
     {
 	"name": "sudo",

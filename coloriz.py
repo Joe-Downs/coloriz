@@ -74,6 +74,16 @@ Colors are now assigned with ``{prefix}color set``, did you mean to do this?
         setMessage = await botCommands.colorSet(ctx, args)
         await ctx.send(setMessage)
 
+    # color search is used to search the named colors for a given string
+    @color.command(name = "search",
+                   aliases = commandConfig.getAliases("color search"),
+                   brief = commandConfig.getBrief("color search"),
+                   usage = commandConfig.getUsage("color search"),
+                   help = commandConfig.getHelp("color search"))
+    async def search(self, ctx, *args):
+        searchMessage = await botCommands.colorSearch(ctx, args)
+        await ctx.send(searchMessage)
+
     # color random assigns the user with a completely random color.
     @color.command(name = "random",
                    aliases = commandConfig.getAliases("color random"),
